@@ -1,0 +1,29 @@
+﻿{% extends 'base.html' %}
+ 
+{% block title %}{{ pt }}{% endblock %}
+ 
+{% block content %}
+<div align=center>
+{% for tb in tbs %}
+<h1>{{tb.0}}</h1>
+<table border="1">
+<tr>
+{% for col in tb.2 %}
+<th>
+{{ col }}
+</th>
+{% endfor %}
+</tr>
+{% for c_info in tb.3%}
+<tr>
+{% for c_col in c_info%}
+<th>
+<a href="/apmd?Token={{token}}&apm_id={{c_info.0 }}&conf={{tb.1}}" title="{{c_info.0 }}">{{ c_col }}</a>
+</th>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+{% endfor %}
+</div>
+{% endblock %}

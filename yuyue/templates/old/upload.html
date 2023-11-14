@@ -1,0 +1,35 @@
+﻿{% extends 'base.html' %}
+ 
+{% block title %}{{pt}}{% endblock %}
+ 
+{% block content %}
+<div align=center>
+<h1>结果上传页面</h1>
+    <form enctype="multipart/form-data" action="/upload?Token={{token}}" method="POST">
+	<table border="0">
+	<tr>
+	<th align=left>
+	<label>请选择结果文件格式：</label>
+	</th>
+	<th align=left>
+	<select name="res_type">
+	<option value ="0">请选择检测机构</option>
+	<option value ="1">易瑞医学</option>
+	<option value ="2">金域检测</option>
+	</select>
+	</th>
+	</tr>
+	<tr>
+	<th align=left>
+	<label>请选择结果文件：</label>
+	</th>
+	<th align=left>
+	<input type="file" accept="application/vnd.ms-excel.sheet.macroEnabled.12, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" name="upload_file" multiple="multiple" />
+	<input type="submit" value="上传"/>
+	</th>
+	</tr>
+	</table>
+	{{stu}}
+    </form>
+</div>
+{% endblock %}

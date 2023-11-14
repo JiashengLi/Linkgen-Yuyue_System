@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5"/>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript">
+/*!global gettext, interpolate, ngettext*/
+    $(document).ready(function(){
+var values = {}
+$('#sub_btn').click(function () {
+$.post("/saoma",values,function(data,status){
+$('#sample_vs').empty();
+$('#sample_vs').append(data);
+// alert(data)
+});
+});
+       $.post("/saoma_wx",{},function(data,status){
+          var info = jQuery.parseJSON(data)
+wx.config({
+    // beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
+    debug: false,// true,// 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: info.appId, // 必填，企业微信的corpID
+    timestamp: info.timestamp, // 必填，生成签名的时间戳
+    nonceStr: info.nonceStr, // 必填，生成签名的随机串
+    signature: info.signature,// 必填，签名，见附录1
+    jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+});
+wx.ready(function(){
+$('.scan').click(function () {
+var table_id = $(this).attr("id")
+// alert(table_id+"dddssaa"); 
+if (table_id=='qrcode'){
+wx.scanQRCode({
+    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+    scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
+    success: function (res) {
+    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+var qrcode_val = result
+// $("#qrcode").attr("disabled",true)
+$('#qrcode_vs').empty();
+$('#qrcode_vs').append(qrcode_val);
+values["qrcode"]=qrcode_val
+}
+});
+}else{
+if (table_id=='barcode'){
+wx.scanQRCode({
+    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+    scanType: ["barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+    success: function (res) {
+    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+var barcode_val = result
+// $("#barcode").attr("disabled",true)
+$('#barcode_vs').empty();
+$('#barcode_vs').append(barcode_val);
+values["barcode"]=barcode_val
+}
+});
+}else{
+alert(table_id)
+}
+}
+});
+    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+});
+wx.error(function(res){
+$('#result').html(res)
+    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+
+});
+})
+})
+</script>
+<title>{{ pt }}</title>
+</head>
+<body><br><br><br>
+    <div align=center>
+        <h1>请提交条码信息</h1><br><br><br>
+        <input type="button" value="扫描二维码" class="scan" id="qrcode" style="width:125px;height:50px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;" /><br><p id="qrcode_vs"></p><br><br>
+        <input type="button" value="扫描条形码" class="scan" id="barcode" style="width:125px;height:50px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;" /><br><p id="barcode_vs"></p><br><br>
+        <input type="button" value="绑定条码" id="sub_btn" style="width:165px;height:50px;background-color:#CD3333;color: #FFFFFF;font-size: 16pt;border:1px solid #CD3333;" /><br><p id="sample_vs"></p><br><br>
+    </div>
+</body>
+</html> 

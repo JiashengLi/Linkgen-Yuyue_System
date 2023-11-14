@@ -1,0 +1,4 @@
+2021-10-12 10:44:44	样本信息提交2：name 'String' is not defined
+2021-10-12 11:15:53	样本删除提交1：yuyue matching query does not exist.
+2021-10-12 11:18:49	获取二维码1：No module named 'Image'
+2021-10-12 11:30:24	样本支付提交1：[Errno 2] No such file or directory: 'wx.conf'

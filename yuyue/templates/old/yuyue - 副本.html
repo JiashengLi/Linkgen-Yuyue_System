@@ -1,0 +1,57 @@
+﻿{% extends 'base_nb.html' %}
+ 
+{% block title %}{{ pt }}{% endblock %}
+ 
+{% block content %}
+<body>
+    <div align=center>
+        <h1>请提交预约信息</h1>
+        <form action="/yuyue" method="post">{%csrf_token%}
+            <table border="0">
+            {{form.as_table}}
+            <tr>
+                <td colspan="2">
+                <input type="submit" value="提交预约信息" />
+                </td>
+            </tr>
+            </table>
+        </form>
+    {{resp}}
+</br>
+<h2>采样服务流程告知书</h2>
+<table border="0" align=center>
+<tr><td><b>一、	温馨提醒：</b></td></tr>
+<tr><td>1、为避免出现呕吐情况，采样前2 小时请勿进食；</td></tr>
+<tr><td>2、为避免影响检测结果，采样前 30 分钟请勿吸烟、喝酒和嚼口香糖；</td></tr>
+<tr><td>3、请带好口罩，做好防护，在等待区耐心等待，听从现场工作人员安排，做相关准备；</td></tr>
+<tr><td>4、请严格遵守“1 米线”间隔要求；</td></tr>
+<tr><td>5、发热、咳嗽人员，中高风险地区人员，入境不满30 天人员，请前往指定医院检测；</td></tr>
+<tr><td>6、采样前，请完成流行病学调查工作（下方二维码）；</br>
+<img src="/static/img/ld_qcode.jpg"  alt="二维码" /></br></td></tr>
+<tr><td>7、采样过程必须保证人员单向流，采样结束后立即离开；</td></tr>
+<tr><td><b>二、采样流程</b></td></tr>
+<tr><td><table border="1" align=left>
+<tr><td><b>准备工作1：</b></br>
+测温、出示随申码（绿码）、流行病学调查完成截图</td></tr>
+<tr><td><b>准备工作2：</b></br>
+（1）请微信搜索小程序：”健康云PRO”，点击“核酸检测服务（实名登记）”；</br>
+（2）点击个人检测服务（立即登记）国内可选择手机实名认证，出国请选择中国护照认证；</br>
+（3）登记信息：填写在沪地址+单位，点击获取“健康云Pro”二维码；</br>
+</td></tr>
+<tr><td><b>准备工作3：</b></br>
+本公司现场支持微信和支付宝扫码付款</td></tr>
+<tr><td><b>采样流程：</b></br>
+1、现场出示支付证明和“健康云Pro”二维码。</br>
+2、扫“健康云Pro”二维码，领取采样管。</br>
+3、现场专业人员进行采样。</br>
+4、报告查询方式： 24小时出具报告</br>
+（1）小程序“健康云pro”→“核酸检测服务”→“结果查询”。</br>
+（2）“支付宝”→“健康码”→“核酸查询”。</br>
+（3）关注“上海易瑞医学”公众号，采样24 小时后可查询检测结果，下载报告。</br>
+<img src="/static/img/gzh_qcode.jpg"  alt="二维码" /></br>
+</td></tr>
+</table></td></tr>
+</table>
+    </div>
+</body>
+{% endblock %}

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5"/>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript">
+/*!global gettext, interpolate, ngettext*/
+    $(document).ready(function(){
+$('#add_yuyue_div').hide()
+$('#payment_div').hide()
+$('#alert_div').hide()
+$('#wenjuan_div').hide()
+$('#qrcode_div').hide()
+       $.post("/yuyue_wx",{},function(data,status){
+          var info = jQuery.parseJSON(data)
+wx.config({
+    // beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
+    debug: false, // true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: info.appId, // 必填，企业微信的corpID
+    timestamp: info.timestamp, // 必填，生成签名的时间戳
+    nonceStr: info.nonceStr, // 必填，生成签名的随机串
+    signature: info.signature,// 必填，签名，见附录1
+    jsApiList: ["scanQRCode","chooseWXPay"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+});
+wx.ready(function(){
+$('.test_table').click(function () {
+var table_id = $(this).attr("id")
+// alert(table_id); 
+wx.scanQRCode({
+    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+    success: function (res) {
+    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+// alert(table_id); 
+var barcode = result.split(',')[1]
+if(confirm(barcode+"\n确定提交该条码？")){
+$.post("/yuyue_detail",{
+opt:"barcode",
+table_id:table_id,
+barcode:barcode
+},function(data,status){
+if(data=="成功绑定条码"){
+alert(data); 
+window.location.reload()
+}
+else{
+alert(data);
+}
+});
+}
+}
+});
+})
+$('.del_table').click(function () {
+if(confirm("确定删除该预约？")){
+$.post("/yuyue_detail",{
+opt:"del",
+table_id:$(this).attr("id"),
+},function(data,status){
+if(data=="已删除该预约"){
+alert(data); 
+window.location.reload()
+}
+else{
+alert(data);
+}
+});
+}
+})
+$('.pay_table').click(function () {
+// $(this).after($(this).attr("id"));
+$('#pay_yuyue').attr('pay_bill',$(this).attr("id"));
+$.get("/yuyue_list",{table_id:$(this).attr("id")},function(data,status){
+//           var info = jQuery.parseJSON(data)
+$('#payment_panel').empty();
+$('#payment_panel').append(data);
+$('#main_div').hide()
+$('#yuyue_bt').hide()
+$('#payment_div').show()
+// $('#payment_div')[0].scrollIntoView(true);
+});
+})
+$('.wenjuan_table').click(function () {
+// $(this).after($(this).attr("id"));
+$('#wenjuan_sub').attr('wenjuan_id',$(this).attr("id"));
+$('#main_div').hide()
+$('#yuyue_bt').hide()
+$('#wenjuan_div').show()
+// $('#payment_div')[0].scrollIntoView(true);
+})
+$('.qrcode_table').click(function () {
+$.post("/yuyue_detail",{
+opt:"qrcode",
+table_id:$(this).attr("id"),
+},function(data,status){
+$('#qrcode_img').attr('src',data);
+$('#main_div').hide()
+$('#yuyue_bt').hide()
+$('#qrcode_div').show()
+// $('#payment_div')[0].scrollIntoView(true);
+});
+})
+$('#qrcode_cancel').click(function () {
+window.location.reload()
+// $('#qrcode_img').attr('src','');
+// $('#qrcode_div').hide()
+// $('#main_div').show()
+// $('#yuyue_bt').show()
+// $('#payment_div')[0].scrollIntoView(true);
+})
+$('#wenjuan_sub').click(function () {
+// $(this).after($(this).attr("id"));
+if($("input[name='checked']").is(':checked')) {
+    // do something
+$.post("/yuyue_detail",{
+opt:"wenjuan",
+table_id:$(this).attr("wenjuan_id"),
+wenjuan_1:$("input[name='1']:checked").val(),
+wenjuan_2:$("input[name='2']:checked").val(),
+wenjuan_3:$("input[name='3']:checked").val(),
+wenjuan_4:$("input[name='4']:checked").val(),
+wenjuan_5:$("input[name='5']:checked").val(),
+wenjuan_6:$("input[name='6']:checked").val(),
+wenjuan_7:$("input[name='7']:checked").val(),
+},function(data,status){
+if(data=="问卷提交成功"){
+alert(data); 
+window.location.href=window.location.href;
+// window.location.reload()
+}
+else{if(data=="请联系工作人员了解相关政策"){
+alert(data); 
+window.location.href=window.location.href;
+// window.location.reload()
+}
+else{
+alert(data);
+}}
+});
+}
+else{
+alert("请确认您所填的信息准确");
+}
+})
+$('#add_yuyue').click(function () {
+// $(this).after($(this).attr("id"));
+$.post("/yuyue_list",{name:$("#id_name").val(),
+age:$("#id_age").val(),
+sex:$("#id_sex").val(),
+phone:$("#id_phone").val(),
+id_type:$("#id_id_type").val(),
+id_code:$("#id_id_code").val(),
+yuyue_date:$("#id_yuyue_date").val(),
+yuyue_time:$("#id_yuyue_time").val(),
+},function(data,status){
+if(data=="预约信息提交成功"){
+alert(data); 
+window.location.reload()
+}
+else{
+alert(data);
+}
+});
+})
+$('#alert_show').click(function () {
+$('#add_yuyue_div').hide()
+$('#alert_div').show()
+$('#alert_div')[0].scrollIntoView(true);
+})
+$('#alert_cancel').click(function () {
+$('#alert_div').hide()
+$('#add_yuyue_div').show()
+$('#add_yuyue_div')[0].scrollIntoView(true);
+})
+$('#list_show').click(function () {
+$('#add_yuyue_div').hide()
+$('#main_div').show()
+$('#yuyue_bt').show()
+$('#main_div')[0].scrollIntoView(true);
+})
+$('#list_cancel').click(function () {
+$('#main_div').hide()
+$('#yuyue_bt').hide()
+$('#add_yuyue_div').show()
+$('#add_yuyue_div')[0].scrollIntoView(true);
+})
+$('#pay_cancel').click(function () {
+$('#pay_yuyue').attr('pay_bill','')
+$('#main_div').show()
+$('#yuyue_bt').show()
+$('#payment_div').hide()
+})
+$('#pay_yuyue').click(function () {
+$.post("/yuyue_detail",{
+opt:"pay",
+table_id:$(this).attr('pay_bill'),
+},function(data,status){
+var info = jQuery.parseJSON(data)
+function onBridgeReady(){
+   WeixinJSBridge.invoke(
+      'getBrandWCPayRequest', {
+         "appId":info.appId,     //公众号名称，由商户传入     
+         "timeStamp":info.timeStamp,         //时间戳，自1970年以来的秒数     
+         "nonceStr":info.nonceStr, //随机串     
+         "package":info.package,     
+         "signType":info.signType,         //微信签名方式：     
+         "paySign":info.paySign //微信签名 
+      },
+      function(res){
+      if(res.err_msg == "get_brand_wcpay_request:ok" ){
+$.post("/yuyue_detail",{
+opt:"pay_done",
+table_id:$('#pay_yuyue').attr('pay_bill'),
+prepay_id:info.package,
+},function(data,status){
+if(data=="已支付该预约"){
+// alert(data); 
+window.location.reload()
+}
+else{
+alert("支付状态更新失败，请联系管理员确认收款");
+}
+})
+$('#pay_yuyue').attr('pay_bill','')
+$('#main_div').show()
+$('#payment_div').hide()
+      // 使用以上方式判断前端返回,微信团队郑重提示：
+            //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+      } 
+else{
+alert("支付异常");
+}
+   }); 
+}
+if (typeof WeixinJSBridge == "undefined"){
+   if( document.addEventListener ){
+       document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+   }else if (document.attachEvent){
+       document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+       document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+   }
+}else{
+   onBridgeReady();
+}
+});
+})
+    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+});
+wx.error(function(res){
+$('#result').html(res)
+    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+
+});
+})
+})
+    </script>
+    <title>{{ pt }}</title>
+</head>
+<body>
+<div align=center id="add_yuyue_div">
+<br><br><br>
+<h1>请提交预约信息</h1>
+<table border="0">
+<tr><th><label for="id_name">姓名:</label></th><td><input type="text" name="name" placeholder="姓名" autofocus maxlength="20" required id="id_name"></td></tr>
+<tr><th><label for="id_sex">性别:</label></th><td><select name="id_sex" id="id_sex">
+<option value="男">男</option><option value="女">女</option>
+</select></td></tr>
+<tr><th><label for="id_age">年龄:</label></th><td><input type="text" name="age" placeholder="年龄" autofocus maxlength="20" required id="id_age"></td></tr>
+<tr><th><label for="id_phone">联系电话:</label></th><td><input type="text" name="phone" placeholder="联系电话" maxlength="20" required id="id_phone"></td></tr>
+<tr><th><label for="id_id_type">证件类型:</label></th><td><select name="id_type" id="id_id_type">
+<option value="身份证">身份证</option>
+<option value="护照">护照</option>
+<option value="台胞证">台胞证</option>
+<option value="港澳通行证">港澳通行证</option>
+</select></td></tr>
+<tr><th><label for="id_id_code">证件号:</label></th><td><input type="text" name="id_code" placeholder="证件号" maxlength="50" required id="id_id_code"></td></tr>
+<tr><th><label for="id_yuyue_date">预约日期:</label></th><td><input type="date" name="yuyue_date" required id="id_yuyue_date"></td></tr>
+<tr><th><label for="id_yuyue_time">预约时间段:</label></th><td><select name="yuyue_time" id="id_yuyue_time">
+<option value="8:00-12:00">8:00-12:00</option>
+<option value="13:00-15:00">13:00-15:00</option>
+</select></td></tr></table>
+<br><br>
+<input type="button" value="提交以上预约" id="add_yuyue" style="width:150px;height:50px;background-color:#3CB371;font-size: 15pt;color: #FFFFFF;border:1px solid #3CB371;" />
+<input type="button" value="查看服务流程" id="alert_show" style="width:150px;height:50px;background-color:#3CB371;font-size: 15pt;color: #FFFFFF;border:1px solid #3CB371;" /><br><br>
+<input type="button" value="返回查看我的预约" id="list_show" style="width:200px;height:50px;background-color:#CDC9C9;font-size: 16pt;color: #FFFFFF;border:1px solid #CDC9C9;" /><br><br>
+<br><br><br>
+</div>
+<div id="yuyue_bt" style="z-index: 9999; position: fixed ! important; right: 0px; top: 20px;">
+<table width=""100% style="position: absolute; width:260px; right: 0px; top: 0px;">
+<input type="button" value="去预约" id="list_cancel" style="width:100px;height:55px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;" /><br><br>
+</table>
+</div>
+<div align=center id="qrcode_div" style="z-index: 9999; position: fixed ! important; right: 0px; top: 100px;">
+<table width=""100% style="position: absolute; width:260px; right: 0px; top: 0px;">
+<img id="qrcode_img"/>
+<input type="button" value="关闭" id="qrcode_cancel" style="width:100px;height:55px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;" /><br><br>
+</table>
+</div>
+<div align=center id="main_div">
+<br><br><br>
+<h1 id="yuyue_title">预约列表</h1>
+{{content}}
+</div>
+<div align=center id="payment_div">
+<br><br><br>
+<h1 id="pay_title">请核对信息并付款</h1>
+<p id="payment_panel"></p>
+<br><br>
+<input type="button" value="支付检测费用" id="pay_yuyue" style="width:165px;height:50px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;" />
+<input type="button" value="返回" id="pay_cancel" style="width:125px;height:50px;background-color:#CDC9C9;font-size: 16pt;color: #FFFFFF;border:1px solid #CDC9C9;" />
+<br><br><br>
+</div>
+<div align=center id="alert_div">
+<br><br><br>
+<h1 id="alert_title">采样服务流程告知书</h1>
+<br>
+<table border="0" align=center>
+<tr><td><b>一、	温馨提醒：</b></td></tr>
+<tr><td>1、为避免出现呕吐情况，采样前2 小时请勿进食；</td></tr>
+<tr><td>2、为避免影响检测结果，采样前 30 分钟请勿吸烟、喝酒和嚼口香糖；</td></tr>
+<tr><td>3、请带好口罩，做好防护，在等待区耐心等待，听从现场工作人员安排，做相关准备；</td></tr>
+<tr><td>4、请严格遵守“1 米线”间隔要求；</td></tr>
+<tr><td>5、发热、咳嗽人员，中高风险地区人员，入境不满30 天人员，请前往指定医院检测；</td></tr>
+<tr><td>6、采样前，请完成流行病学调查工作（下方二维码）；</br>
+<img src="/static/img/ld_qcode.jpg"  alt="二维码" /></br></td></tr>
+<tr><td>7、采样过程必须保证人员单向流，采样结束后立即离开；</td></tr>
+<tr><td><b>二、采样流程</b></td></tr>
+<tr><td><table border="1" align=left>
+<tr><td><b>准备工作：</b></br>
+测温、出示随申码（绿码）、流行病学调查完成截图</td></tr>
+<tr><td><b>付款：</b></br>
+1、请扫二维码（支付宝或微信）完成付款，并备注姓名；</br>
+2、团单：由联系人统一收取，完成支付；</br>
+</td></tr>
+<tr><td><b>核对信息：</b></br>
+1、请仔细核对姓名、手机号码、身份证号，无误后签字确认。如有错误，请及时告知工作人员修改。</br>
+2、领取采样管。</br>
+</td></tr>
+<tr><td><b>采样操作：</b></br>
+1、将采样管交予采样工作人员，请务必注意与前后保持“1 米”距离。</br>
+</td></tr>
+<tr><td><b>报告查询：</b></br>
+1、团单客户集中发给联系人，由联系人分发给个人。</br>
+2、小程序“健康云pro”→“核酸检测服务”→“结果查询”。</br>
+3、“支付宝”→“健康码”→“核酸查询”。</br>
+4、关注“上海易瑞医学”公众号，采样24 小时后可查询检测结果，下载报告。</br>
+<img src="/static/img/gzh_qcode.jpg"  alt="二维码" /></br>
+</td></tr>
+</table></td></tr>
+</table>
+<br>
+<input type="button" value="返回" id="alert_cancel" style="width:125px;height:50px;background-color:#CDC9C9;font-size: 16pt;color: #FFFFFF;border:1px solid #CDC9C9;" />
+<br><br><br>
+</div>
+<div id="wenjuan_div" style="left:3%;width:95%;position: absolute;">
+<br><br><br>
+<h1 align=center>流行病学调查登记</h1>
+<h3>您好！根据《中华人民共和国传染病防治法》和《上海市突发公共卫生事态应急预案》等相关法律法规的要求，请配合我们填写以下内容：</h3>
+<table align=left>
+<tr valign="top" valign="top" style="font-size: 13pt;"><td><b>1. </b></td><td><b>您14天内是否去过上海中高风险地区或其他病例报告社区的旅行史或居住史？</b></td></tr>
+<tr><td><b></b></td><td>
+<b>黄埔：</b><br>
+昭通路居民区(福州路以南区域) <br>
+中福世福汇大酒店<br>
+贵西小区<br>
+<b>宝山：</b><br>
+友谊路街道临江新村(一、二村)小区<br>
+</td></tr>
+<tr><td><b></b></td><td>
+<label><input type="radio" name="1" value="是">是</label>
+<label><input type="radio" name="1" value="否">否</label>
+</td></tr>
+<tr><td><b></b></td><td></td></tr>
+<tr valign="top" style="font-size: 13pt;"><td><b>2. </b></td><td><b>您14天内是否与新冠病毒感染者（核酸检测阳性者）有接触史？</b></td></tr>
+<tr><td><b></b></td><td>
+<label><input type="radio" name="2" value="是">是</label>
+<label><input type="radio" name="2" value="否">否</label>
+</td></tr>
+<tr><td><b></b></td><td></td></tr>
+<tr valign="top" style="font-size: 13pt;"><td><b>3. </b></td><td><b>前14天内有没有接触过，来自有病例报告的发热或呼吸道症状的患者？</b></td></tr>
+<tr><td><b></b></td><td>
+<label><input type="radio" name="3" value="是">是</label>
+<label><input type="radio" name="3" value="否">否</label>
+</td></tr>
+<tr><td><b></b></td><td></td></tr>
+<tr valign="top" style="font-size: 13pt;"><td><b>4. </b></td><td><b>周围有没有聚集性发病的情况？（2周内在小范围如家庭、办公室、学校班级等场所，出现2例及以上发热和/或呼吸道症状的病例。）</b></td></tr>
+<tr><td><b></b></td><td>
+<label><input type="radio" name="4" value="是">是</label>
+<label><input type="radio" name="4" value="否">否</label>
+</td></tr>
+<tr><td><b></b></td><td></td></tr>
+<tr valign="top" style="font-size: 13pt;"><td><b>5. </b></td><td><b>14天内是否有境外地区的旅行史或居住史？</b></td></tr>
+<tr><td><b></b></td><td>
+<label><input type="radio" name="5" value="是">是</label>
+<label><input type="radio" name="5" value="否">否</label>
+</td></tr>
+<tr><td><b></b></td><td></td></tr>
+<tr valign="top" style="font-size: 13pt;"><td><b>6. </b></td><td><b>14天内是否有北京市、辽宁省、湖北省、黑龙江省、吉林省等有病例报告社区的外省市旅行史或居住史？</b></td></tr>
+<tr><td><b></b></td><td>
+<b>石家庄市</b><br>
+<b>邢台市</b><br>
+<b>绥化市</b><br>
+<b>通化市</b><br>
+<b>北京顺义区</b><br>
+<b>哈尔滨市</b><br>
+<b>大连市</b><br>
+<b>长春市</b><br>
+<b>松原市</b><br>
+</td></tr>
+<tr><td><b></b></td><td>
+<label><input type="radio" name="6" value="是">是</label>
+<label><input type="radio" name="6" value="否">否</label>
+</td></tr>
+<tr><td><b></b></td><td></td></tr>
+<tr valign="top" style="font-size: 13pt;"><td><b>7. </b></td><td><b>是否从事以下行业之一：教育、护理、托育、家政、物业、快递、公交车司机、出租车司机、劳动密集型企业、集贸市场等工作场所？</b></td></tr>
+<tr><td><b></b></td><td>
+<label><input type="radio" name="7" value="是">是</label>
+<label><input type="radio" name="7" value="否">否</label>
+</td></tr>
+<tr><td><b></b></td><td></td></tr>
+<tr valign="top" style="font-size: 13pt;"><td><b></b></td><td><b>请您务必如实填报，若故意隐瞒等相关情况，造成后果，填写人员将要承担相应的法律责任。谢谢您的配合。</b></td></tr>
+<tr><td><b></b></td><td><b><label><input type="checkbox" name="checked" value="确认">我承诺以上信息准确无误。</label></b></td></tr>
+<tr><td><b></b></td><td></td></tr>
+</table>
+<br><br>
+<input type="button" value="提交问卷" id="wenjuan_sub" style="width:165px;height:50px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;" />
+<br><br><br>
+</div>
+<br><br>
+</body>
+</html> 

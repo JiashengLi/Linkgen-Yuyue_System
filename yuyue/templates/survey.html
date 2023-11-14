@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{{ pt }}</title>
+
+	<link rel="stylesheet" type="text/css" href="static/css/base.css" />
+	<link rel="stylesheet" type="text/css" href="static/css/edit.css" />
+	<link rel="stylesheet" type="text/css" href="static/css/font-awesome/css/font-awesome.min.css" />
+
+</head>
+<body>
+	<div class="edit-wrap">
+        <div class="navigation clearfix">
+        	<a class="common-button" id="preview-survey" href="javascript:void(0);">预览问卷</a>
+        </div>
+        <div class="edit-survey-content clearfix">
+        	<div class="sur-sidebar">
+        		<div class="select-title">题型选择 <i class="fa fa-angle-up"></i></div>
+        		<ul class="navul-left">
+        			<li class="radio-btn" _type = "1">单选</li>
+        			<li class="choice-btn"  _type = "2">多选</li>
+        			<li class="ques-ans-btn"  _type = "3">多行填空题</li>
+        			<li class="describe-btn"  _type = "4">描述说明</li>
+        		</ul>
+        	</div>
+        	<div class="sur-container" id="sur-container">
+        		<div class="survey-title edit-area" contenteditable="true">添加医疗产品X的问卷调查</div>
+        		<div class="question-box">
+        			<p class="blank-tip">点击左侧题目，添加到此空白区域</p>
+        		</div>
+        	</div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src = "static/js/jquery.min.js"></script>
+	<script type="text/javascript" src = "static/js/survey.js"></script>
+</body>
+</html>

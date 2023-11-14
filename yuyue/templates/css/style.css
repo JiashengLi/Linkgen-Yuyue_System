@@ -1,0 +1,42 @@
+#add_yuyue{
+    width:150px;height:50px;background-color:#3CB371;font-size: 15pt;color: #FFFFFF;border:1px solid #3CB371;
+}
+#alert_show{
+    width:150px;height:50px;background-color:#3CB371;font-size: 15pt;color: #FFFFFF;border:1px solid #3CB371;
+}
+#list_show{
+    width:200px;height:50px;background-color:#CDC9C9;font-size: 16pt;color: #FFFFFF;border:1px solid #CDC9C9;
+}
+#list_cancel{
+    width:100px;height:55px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;
+}
+#qrcode_cancel{
+    width:100px;height:55px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;
+}
+#pay_yuyue{
+    width:165px;height:50px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;
+}
+#pay_cancel{
+    width:125px;height:50px;background-color:#CDC9C9;font-size: 16pt;color: #FFFFFF;border:1px solid #CDC9C9;
+}
+#alert_cancel{
+    width:125px;height:50px;background-color:#CDC9C9;font-size: 16pt;color: #FFFFFF;border:1px solid #CDC9C9;
+}
+#wenjuan_sub{
+    width:165px;height:50px;background-color:#3CB371;font-size: 16pt;color: #FFFFFF;border:1px solid #3CB371;
+}
+#yuyue_bt{
+    z-index: 9999; position: fixed ! important; right: 0px; top: 20px;
+}
+#yuyue_bt_table{
+    position: absolute; width:260px; right: 0px; top: 0px;
+}
+#qrcode_div{
+    z-index: 9999; position: fixed ! important; right: 0px; top: 100px;
+}
+#qrode_div_table{
+    position: absolute; width:260px; right: 0px; top: 0px;
+}
+#wenjuan_div{
+    left:3%;width:95%;position: absolute;
+}

@@ -1,0 +1,41 @@
+﻿{% extends 'base.html' %}
+ 
+{% block title %}{{ pt }}{% endblock %}
+ 
+{% block content %}
+<body>
+    <div align=center>
+        <h1>样本接收页面</h1>
+        <form action="/{{bsite}}?Token={{token}}" method="post">
+            <table border="0">
+            <tr>
+            <th align=left>
+            <label>请扫描样本条码：</label>
+            </th>
+            </tr>
+            <tr>
+            <th align=left>
+            <input type="text" name="samp_id" autofocus />
+            <input type="submit" value="确认" />
+            </th>
+            </tr>
+            </table>
+            {{stu}}</br>
+        </form>
+    </div>
+<div align=center>
+<table border="1">
+{% for info in info_row%}
+<tr>
+<th>
+{{ info.0 }}
+</th>
+<th>
+{{ info.1 }}
+</th>
+</tr>
+{% endfor %}
+</table>
+</div>
+</body>
+{% endblock %}

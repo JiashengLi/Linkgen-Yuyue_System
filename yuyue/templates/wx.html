@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	{% load static %}
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5"/>
+    <link rel="stylesheet" href="static/css/style.css">
+    <script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="static/js/index.js"></script>
+    <title>{{ pt }}</title>
+</head>
+<body>
+<div id="yuyue_bt" >
+<table width=""100% id="yuyue_bt_table">
+<input type="button" value="去预约" id="list_cancel"  /><br><br>
+</table>
+</div>
+<div align=center id="qrcode_div" >
+<table width=""100% id="qrode_div_table" >
+<img id="qrcode_img"/>
+<input type="button" value="关闭" id="qrcode_cancel"  /><br><br>
+</table>
+</div>
+<div align=center id="main_div">
+<br><br><br>
+<h1 id="yuyue_title">预约列表</h1>
+{{content}}
+</div>
+
+<div align=center id="payment_div">
+<br><br><br>
+<h1 id="pay_title">请核对信息并付款</h1>
+<p id="payment_panel"></p>
+<br><br>
+<input type="button" value="支付检测费用" id="pay_yuyue"  />
+<input type="button" value="返回" id="pay_cancel"  />
+<br><br><br>
+</div>
+
+
+<br><br>
+</body>
+</html> 

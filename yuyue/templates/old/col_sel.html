@@ -1,0 +1,46 @@
+﻿{% extends 'base.html' %}
+ 
+{% block title %}列选择页面{% endblock %}
+ 
+{% block content %}
+{{stu}}
+    <form enctype="multipart/form-data" action="/col_chs/" method="GET">{% csrf_token %}
+	<table border="1">
+	<tr>
+		<th><select name="option0">
+		<option value ="{{file_index}}">{{file_index}}</option>
+		</select></th>
+	</tr>
+	<tr>
+		<th>用户ID</th>
+		<th>RS编号</th>
+		<th>Allele1</th>
+		<th>Allele2</th>
+	</tr>
+	<tr>
+		<th><select name="option1">
+		{% for col in col_list %}
+			<option value ="{{ forloop.counter }}">{{ col }}</option>
+		{% endfor %}
+	</select></th>
+		<th><select name="option2">
+		{% for col in col_list %}
+			<option value ="{{ forloop.counter }}">{{ col }}</option>
+		{% endfor %}
+	</select></th>
+		<th><select name="option3">
+		{% for col in col_list %}
+			<option value ="{{ forloop.counter }}">{{ col }}</option>
+		{% endfor %}
+	</select></th>
+		<th><select name="option4">
+		{% for col in col_list %}
+			<option value ="{{ forloop.counter }}">{{ col }}</option>
+		{% endfor %}
+	</select></th>
+	</tr>
+	</table>
+	<br>
+	<input type="submit" value="确认"/>
+    </form>
+{% endblock %}

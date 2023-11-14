@@ -1,0 +1,12 @@
+﻿{% extends 'base_nb.html' %}
+ 
+{% block title %}{{pt}}{% endblock %}
+ 
+{% block content %}
+<div align=center>
+<h1>索引页面</h1>
+       {% for page in pages %}
+       <a href="/{{page.page_url}}" title="{{page.page_name}}">{{page.page_name}}</a><br/>
+       {% endfor %}
+</div>
+{% endblock %}
